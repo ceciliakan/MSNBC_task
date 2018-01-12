@@ -3,7 +3,6 @@
 
 import numpy as np
 from scipy import stats
-from more_itertools import flatten
 
 from readfile import readData
 from plot_request_len import plotLen, boxplotLen # plot user request lengths
@@ -32,14 +31,15 @@ pg99Pct = [ i for i in pg_raw if len(i) < sessLength_stats["99Pct"] ]
 one_category, one_cat_bins = single_request(pg99Pct)
 # plot_single_request_cat(one_cat_bins, pg_category)
 
+## Category transition
+transitMat = gen_transitMat(pg99Pct)
+transHeatMap(transitMat, pg_category)
+
 ## Page request by category
 category_bin = categoryBin.total_cat_bin(pg99Pct)
 rm_consec_bin = categoryBin.rm_consecut_bin(pg99Pct)
 rm_re_bin = categoryBin.rm_repeat_bin(pg99Pct)
 categoryBin.plotCatBin(category_bin, rm_consec_bin, rm_re_bin, pg_category)
 
-## Category transition
-transitMat = gen_transitMat(pg99Pct)
-transHeatMap(transitMat, pg_category)
 
 raw_input()

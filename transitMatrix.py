@@ -18,23 +18,24 @@ def gen_transitMat(pg99Pct):
     Tx0 = [ x[-1] for x in [ i for i in pg99Pct ] ]
     transitMat[0,0:] = np.bincount(Tx0)
 
-    print 'enter'
-
     for line in pg99Pct:
         for i, j in pairwise(line):
             transitMat[j][i] = transitMat[j][i] + 1 
         
-    print "exit"
-
     transitMat = np.true_divide(transitMat, transitMat.sum(axis=1, keepdims=True))*100
     
     return transitMat
 
 def transHeatMap(transitMat, pg_category):
-    nw_pg_cat = pg_category.insert(0, "Exit*")
+    nw_pg_cat = list(pg_category)
+    nw_pg_cat.insert(0, "Exit*")
 
     fig, ax = plt.subplots()
-    heatmap = ax.pcolor(transitMat, cmap=plt.cm.plasma)
+    heatmap = ax.pcolor(transitMat, cmap = plt.cm.jet)
+
+    cbar = plt.colorbar(heatmap)
+    cbar.ax.set_yticklabels(['0','25','50'])
+    cbar.set_label('% transition', rotation = 270)
 
     # put the major ticks at the middle of each cell
     ax.set_xticks(np.arange(transitMat.shape[1]) + 0.5, minor=False)

@@ -36,6 +36,7 @@ def plotCatBin(category_bin, rm_consec_bin, rm_re_bin, pg_category):
     topDiff = category_bin - rm_consec_bin
     idx = np.arange(17)
     
+    plt.figure()
     plot1 = plt.bar(idx, rm_re_bin, width = 0.4, color = (0.254902, 0.411765, 0.882353) )
     plot2 = plt.bar(idx, middleDiff, bottom = rm_re_bin, width = 0.4, color = (0.443137, 0.776471, 0.443137) )
     plot3 = plt.bar(idx, topDiff, bottom = middleDiff+rm_re_bin, width = 0.4, color = (1, 0.843137, 0) )
@@ -46,5 +47,6 @@ def plotCatBin(category_bin, rm_consec_bin, rm_re_bin, pg_category):
     plt.legend( [plot3,plot2,plot1], ['Consecutive','Repeated','Per user'] )
     
     plt.show()
+    return 0
 
 
