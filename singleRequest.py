@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def single_request(pg_raw):
-    one_category = np.array([ x[0] for x in [ i for i in pg_raw if len(i) == 1 ] ])
+    one_category = [ x[0] for x in [ i for i in pg_raw if len(i) == 1 ] ]
     one_cat_bins = np.bincount(one_category)
     one_cat_bins = np.delete(one_cat_bins, 0)
     return one_category, one_cat_bins
