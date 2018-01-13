@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 def plotLen(sessLength):
     plot1 = plt.figure()
-    plt.plot(sessLength)
+    plt.plot(sessLength, color = (0.254902, 0.411765, 0.882353) )
     plt.ylabel('User Request Length')
     plt.xlabel('User')
     plt.title('User Request Lengths')

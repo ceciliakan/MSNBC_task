@@ -12,8 +12,8 @@ def single_request(pg_raw):
 def plot_single_request_cat(one_cat_bins, pg_category):
     one_cat_bins.tolist
     plot1 = plt.figure()
-    plt.bar(range(len(one_cat_bins)), one_cat_bins, width = 0.4, align = 'center')
-    plt.xticks(range(len(pg_category)), pg_category)
+    plt.bar(range(len(one_cat_bins)), one_cat_bins, width = 0.4, align = 'center', color = (0.254902, 0.411765, 0.882353) )
+    plt.xticks(range(len(pg_category)), pg_category, rotation = 55)
     plt.xlabel("Page Category")
     plt.ylabel("Number of Users")
     plt.title("Single-Page-Request Counts by Page Categories")

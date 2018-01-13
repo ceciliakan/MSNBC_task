@@ -22,24 +22,26 @@ sessLength_stats = {'mean': np.mean(sessLength), 'median': np.median(sessLength)
 '90Pct': np.percentile(sessLength, 90), '95Pct': np.percentile(sessLength, 95), \
 '99Pct': np.percentile(sessLength, 99), '99_5Pct': np.percentile(sessLength, 99.5)   }
 
-# plotLen(sessLength)
-# boxplotLen(sessLength)
+#plotLen(sessLength)
+#boxplotLen(sessLength)
 
 pg99Pct = [ i for i in pg_raw if len(i) < sessLength_stats["99Pct"] ]
 
 ## Singlflatten.e page requests
 one_category, one_cat_bins = single_request(pg99Pct)
-# plot_single_request_cat(one_cat_bins, pg_category)
-
-## Category transition
-transitMat = gen_transitMat(pg99Pct)
-transHeatMap(transitMat, pg_category)
+#plot_single_request_cat(one_cat_bins, pg_category)
 
 ## Page request by category
 category_bin = categoryBin.total_cat_bin(pg99Pct)
-rm_consec_bin = categoryBin.rm_consecut_bin(pg99Pct)
+rm_consec_bin, rm_consecut_pg = categoryBin.rm_consecut_bin(pg99Pct)
 rm_re_bin = categoryBin.rm_repeat_bin(pg99Pct)
-categoryBin.plotCatBin(category_bin, rm_consec_bin, rm_re_bin, pg_category)
+#categoryBin.plotCatBin(category_bin, rm_consec_bin, rm_re_bin, pg_category)
 
+## Category transition
+# transitMat = gen_transitMat(pg99Pct)
+# transHeatMap(transitMat, pg_category)
+
+transitMatRp = gen_transitMat(rm_consecut_pg)
+transHeatMap(transitMatRp, pg_category)
 
 raw_input()

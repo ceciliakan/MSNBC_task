@@ -3,6 +3,10 @@
 import numpy as np
 from itertools import tee, izip
 import matplotlib.pyplot as plt
+import math
+
+def roundup(x):
+    return int(math.ceil(x / 10.0)) * 10
 
 def pairwise(iterable):
     a, b = tee(iterable)
@@ -10,31 +14,35 @@ def pairwise(iterable):
     return izip(a, b)
 
 def gen_transitMat(pg99Pct):
-    transitMat = np.zeros( (18,18) )
+    transitMat = np.zeros( (17,17) )
     
+    '''
     T0x = [ x[0] for x in [ i for i in pg99Pct ] ]
     transitMat[0:,0] = np.bincount(T0x)
 
     Tx0 = [ x[-1] for x in [ i for i in pg99Pct ] ]
     transitMat[0,0:] = np.bincount(Tx0)
+    '''
 
     for line in pg99Pct:
         for i, j in pairwise(line):
-            transitMat[j][i] = transitMat[j][i] + 1 
-        
-    transitMat = np.true_divide(transitMat, transitMat.sum(axis=1, keepdims=True))*100
+            transitMat[j-1][i-1] = transitMat[j-1][i-1] + 1 
     
+    transitMat_sum = transitMat.sum(axis=0, keepdims=True)
+    transitMat = np.divide(transitMat, transitMat_sum, out=np.zeros_like(transitMat), where=transitMat_sum!=0)*100
+   
+    np.savetxt("transitMat.csv", transitMat, delimiter=",")
+    np.savetxt("transitMat_sum.csv", transitMat_sum, delimiter=",")
+
     return transitMat
 
 def transHeatMap(transitMat, pg_category):
-    nw_pg_cat = list(pg_category)
-    nw_pg_cat.insert(0, "Exit*")
-
     fig, ax = plt.subplots()
-    heatmap = ax.pcolor(transitMat, cmap = plt.cm.jet)
+    heatmap = ax.pcolor(transitMat, cmap = plt.cm.viridis, vmin=0, vmax=roundup(np.amax(transitMat))) # 100
 
-    cbar = plt.colorbar(heatmap)
-    cbar.ax.set_yticklabels(['0','25','50'])
+    idx = np.arange(0,110,10)
+    cbar = plt.colorbar(heatmap, ticks=[idx])
+    cbar.ax.set_yticklabels( list(map(str,idx)) )
     cbar.set_label('% transition', rotation = 270)
 
     # put the major ticks at the middle of each cell
@@ -45,6 +53,7 @@ def transHeatMap(transitMat, pg_category):
     ax.invert_yaxis()
     ax.xaxis.tick_top()
 
-    ax.set_xticklabels(nw_pg_cat, minor=False)
-    ax.set_yticklabels(nw_pg_cat, minor=False)
+    ax.set_xticklabels(pg_category, minor=False, rotation = 55)
+    ax.set_yticklabels(pg_category, minor=False)
+
     plt.show()
