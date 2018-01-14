@@ -3,16 +3,7 @@
 from itertools import groupby
 import numpy as np
 import matplotlib.pyplot as plt
-
-def flatten(seq,container=None):
-    if container is None:
-        container = []
-    for s in seq:
-        if hasattr(s,'__iter__'):
-            flatten(s,container)
-        else:
-            container.append(s)
-    return container
+from flatNestedList import flatten
 
 def total_cat_bin(pg99Pct):
     category_bin = np.bincount(flatten(pg99Pct))
@@ -32,17 +23,17 @@ def rm_repeat_bin(pg99Pct):
     return rm_re_bin
 
 def plotCatBin(category_bin, rm_consec_bin, rm_re_bin, pg_category):
-    middleDiff = rm_consec_bin - rm_re_bin
-    topDiff = category_bin - rm_consec_bin
-    idx = np.arange(17)
+    middleDiff = (rm_consec_bin - rm_re_bin)/ sum(category_bin)
+    topDiff = category_bin - rm_consec_bin / sum(category_bin)
+    idx = range(17)
     
     plott = plt.figure()
-    plot1 = plt.bar(idx, rm_re_bin, width = 0.4, color = (0.254902, 0.411765, 0.882353) )
+    plot1 = plt.bar(idx, rm_re_bin/sum(category_bin), width = 0.4, color = (0.254902, 0.411765, 0.882353) )
     plot2 = plt.bar(idx, middleDiff, bottom = rm_re_bin, width = 0.4, color = (0.443137, 0.776471, 0.443137) )
     plot3 = plt.bar(idx, topDiff, bottom = middleDiff+rm_re_bin, width = 0.4, color = (1, 0.843137, 0) )
     
-    plt.title('Page Request Counts by Category')
-    plt.ylabel('Occurence / page')
+    plt.title('Page Request by Category')
+    plt.ylabel('Percentage of total page counts')
     plt.xticks(idx, pg_category, rotation = 55)
     plt.legend( [plot3,plot2,plot1], ['Consecutive','Repeated','Per user'] )
     

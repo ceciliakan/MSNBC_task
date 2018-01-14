@@ -9,12 +9,22 @@ def single_request(pg_raw):
     one_cat_bins = np.delete(one_cat_bins, 0)
     return one_category, one_cat_bins
 
-def plot_single_request_cat(one_cat_bins, pg_category):
+def pie_singReqst_cat(one_cat_bins, pg_category):
     one_cat_bins.tolist
-    plot1 = plt.figure()
-    plt.bar(range(len(one_cat_bins)), one_cat_bins, width = 0.4, align = 'center', color = (0.254902, 0.411765, 0.882353) )
-    plt.xticks(range(len(pg_category)), pg_category, rotation = 55)
-    plt.xlabel("Page Category")
-    plt.ylabel("Number of Users")
+    fig, ax = plt.subplots()
+    ax.pie( one_cat_bins, labels = pg_category, autopct='%1.1f%%',  shadow=False, startangle=90 )
+    ax.axis('equal')
     plt.title("Single-Page-Request Counts by Page Categories")
-    plot1.show()
+    plt.show()
+
+def singReqst_cat_adj(one_cat_bins, rm_re_bin, pg_category):
+    data = np.true_divide(one_cat_bins, rm_re_bin)
+    plot1 = plt.figure()
+    idx = range(17)
+    plt.bar(idx, data*100, width = 0.4, color = (0.254902, 0.411765, 0.882353))
+    plt.xlabel('Categories')
+    plt.ylabel('Percentage of User / %')
+    plt.title("Percentage Single-Page-Request by Page Categories")
+    plt.xticks(idx, pg_category, rotation = 55)
+
+    plt.show()

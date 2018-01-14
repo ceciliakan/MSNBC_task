@@ -13,26 +13,17 @@ def pairwise(iterable):
     next(b, None)
     return izip(a, b)
 
-def gen_transitMat(pg99Pct):
+def gen_transitMat(pg99Pct, N):
     transitMat = np.zeros( (17,17) )
-    
-    '''
-    T0x = [ x[0] for x in [ i for i in pg99Pct ] ]
-    transitMat[0:,0] = np.bincount(T0x)
-
-    Tx0 = [ x[-1] for x in [ i for i in pg99Pct ] ]
-    transitMat[0,0:] = np.bincount(Tx0)
-    '''
 
     for line in pg99Pct:
         for i, j in pairwise(line):
             transitMat[j-1][i-1] = transitMat[j-1][i-1] + 1 
     
-    transitMat_sum = transitMat.sum(axis=0, keepdims=True)
+    transitMat_sum = transitMat.sum(axis = N, keepdims=True)
     transitMat = np.divide(transitMat, transitMat_sum, out=np.zeros_like(transitMat), where=transitMat_sum!=0)*100
    
-    np.savetxt("transitMat.csv", transitMat, delimiter=",")
-    np.savetxt("transitMat_sum.csv", transitMat_sum, delimiter=",")
+    #np.savetxt("transitMat1_rev.csv", transitMat, delimiter=",")
 
     return transitMat
 
