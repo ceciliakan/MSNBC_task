@@ -23,14 +23,15 @@ def rm_repeat_bin(pg99Pct):
     return rm_re_bin
 
 def plotCatBin(category_bin, rm_consec_bin, rm_re_bin, pg_category):
-    middleDiff = (rm_consec_bin - rm_re_bin)/ sum(category_bin)
-    topDiff = category_bin - rm_consec_bin / sum(category_bin)
+    middleStack = np.true_divide( rm_consec_bin - rm_re_bin, sum(category_bin) )*100
+    topStack = np.true_divide( category_bin - rm_consec_bin, sum(category_bin) )*100
+    bottomStack = np.true_divide( rm_re_bin, sum(category_bin) )*100
     idx = range(17)
     
     plott = plt.figure()
-    plot1 = plt.bar(idx, rm_re_bin/sum(category_bin), width = 0.4, color = (0.254902, 0.411765, 0.882353) )
-    plot2 = plt.bar(idx, middleDiff, bottom = rm_re_bin, width = 0.4, color = (0.443137, 0.776471, 0.443137) )
-    plot3 = plt.bar(idx, topDiff, bottom = middleDiff+rm_re_bin, width = 0.4, color = (1, 0.843137, 0) )
+    plot1 = plt.bar(idx, bottomStack, width = 0.4, color = (0.254902, 0.411765, 0.882353) )
+    plot2 = plt.bar(idx, middleStack, bottom = bottomStack, width = 0.4, color = (0.443137, 0.776471, 0.443137) )
+    plot3 = plt.bar(idx, topStack, bottom = middleStack+bottomStack, width = 0.4, color = (1, 0.843137, 0) )
     
     plt.title('Page Request by Category')
     plt.ylabel('Percentage of total page counts')

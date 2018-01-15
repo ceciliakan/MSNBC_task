@@ -17,14 +17,14 @@ def pie_singReqst_cat(one_cat_bins, pg_category):
     plt.title("Single-Page-Request Counts by Page Categories")
     plt.show()
 
-def singReqst_cat_adj(one_cat_bins, rm_re_bin, pg_category):
-    data = np.true_divide(one_cat_bins, rm_re_bin)
+def singReqst_cat(one_cat_bins, sessLen_size, pg_category):
+    data = np.true_divide(one_cat_bins, sessLen_size )*100
     plot1 = plt.figure()
     idx = range(17)
-    plt.bar(idx, data*100, width = 0.4, color = (0.254902, 0.411765, 0.882353))
+    plt.bar(idx, data, width = 0.4, color = (0.254902, 0.411765, 0.882353))
     plt.xlabel('Categories')
     plt.ylabel('Percentage of User / %')
     plt.title("Percentage Single-Page-Request by Page Categories")
     plt.xticks(idx, pg_category, rotation = 55)
 
-    plt.show()
+    plot1.show()

@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def plotLen(sessLength):
+    
     plot1 = plt.figure()
     plt.plot(sessLength, color = (0.254902, 0.411765, 0.882353) )
     plt.ylabel('User Request Length')
@@ -21,14 +22,16 @@ def boxplotLen(sessLength):
 
 def plot_requestLen(sessLength):
     sessLengthsize = np.bincount(sessLength)
-    sessLengthsize = np.delete(sessLengthsize, [range(0,10)] )
-  
+    sessLengthsize = np.delete(sessLengthsize, 0)#[range(0,10)] )
+    sessLengthsize = np.true_divide( sessLengthsize, sessLength.size )*100
+    idx = range(1,sessLengthsize.size+1)
+
     plot3 = plt.figure()
-    plt.bar(range(10,sessLengthsize.size+10), sessLengthsize, width = 0.4, align = 'center', color = (0.254902, 0.411765, 0.882353) )
-    plt.title("User Request Length Count")
+    plt.bar(idx, sessLengthsize, width = 0.4, align = 'center', color = (0.254902, 0.411765, 0.882353) )
+    plt.title("User Request Length")
     plt.xlabel('User Request Length')
-    plt.ylabel('Length Occurrence')
-    plt.xticks( range(10,sessLengthsize.size+10) )
+    plt.ylabel('Percentage of Users / %')
+    plt.xticks(idx)
     plot3.show()
     
     
