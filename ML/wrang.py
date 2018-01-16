@@ -11,7 +11,7 @@ def catFragmnts(len_class_lines):
 
     for data in len_class_lines:
         fragmnt = [ sum( 1 for _ in group ) for key, group in groupby( data ) if key ]
-        fragmnt = fragmnt + [0] * ( 10-len(fragmnt) ) 
+        fragmnt = fragmnt + [0] * ( 16-len(fragmnt) )
         fragment_bin.append(fragmnt)
     
     return fragment_bin
@@ -23,22 +23,21 @@ def splitData(continFrags, testSize, valSize):
     
     trainData = []
     testData = []
-    valData = []
+    #valData = []
 
     for value in continFrags:
         trainD, testD = train_test_split(value, test_size=testSize, random_state = 42)
-        trainD, valD = train_test_split(trainD, test_size=val_size, random_state = 42)
+        #trainD, valD = train_test_split(trainD, test_size=val_size, random_state = 42)
 
-        trainData.append(trainD[0])
-        testData.append(testD[0])
-        valData.append(valD[0])
-        print trainData
+        trainData = trainData + trainD
+        testData = testData + testD
+        #valData = valData + valD
 
     trainData, trainLb = data_label_split(trainData)
     testData, testLb = data_label_split(testData)
-    valData, valLb = data_label_split(valData)
+    #valData, valLb = data_label_split(valData)
     
-    return trainData, testData, valData, trainLb, testLb, valLb
+    return trainData, trainLb, testData, testLb #, valData, valLb
 
 # Shuffle training sets, take out labels
 def data_label_split(tData):
