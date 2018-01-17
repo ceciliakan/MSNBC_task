@@ -5,34 +5,28 @@ import numpy as np
 from itertools import izip
 
 from readfile import readData
-from wrang import catFragmnts, splitData, genClassWeight
+from wrang import catFragmnts, splitData, classSelect
 import MLalgo
 
 np.set_printoptions(suppress=True)
 
-pg_raw, pg_category = readData('msnbc990928.seq')
+pg_raw, pg_category = readData('msnbc990928.seq') # read raw data
 
-sessLength = np.array ( [ len(i) for i in pg_raw ] )
+sessLength = np.array ( [ len(i) for i in pg_raw ] ) # query sequence lengths
 
-sessLenPct = [np.percentile(sessLength, 90), np.percentile(sessLength, 95), np.percentile(sessLength, 99), np.percentile(sessLength, 99.5)]
+## Partition data by sequence length
+classBound = [90, 95, 99, 99.5, 100] 
 
-## Extract first 10 page requests for 90% longest sequences
-pg90_95 = [ i[0:10] for i in pg_raw if (len(i) > sessLenPct[0] and len(i) <= sessLenPct[1] ) ]
-#pg95_99 = [ i[0:16] for i in pg_raw if (len(i) > sessLenPct[1]  and len(i) <= sessLenPct[2]) ]
-pg99_995 = [ i[0:10] for i in pg_raw if (len(i) > sessLenPct[2] and len(i) <= sessLenPct[3]) ]
-pg995_m = [ i[0:10] for i in pg_raw if (len(i) > sessLenPct[3] ) ]
-'''
-len_class = [ pg90_95, pg95_99, pg99_995 , pg995_m]
-lb = [9095, 9599, 99995 , 99500]
-lenh = [len(pg90_95),len(pg95_99), len(pg99_995),len(pg995_m)]
+classInterval = [0] * len(classBound)
+for i,n in enumerate(classBound):
+    classInterval[i] = np.percentile(sessLength, n)
 
-'''
-pg95_99 = pg90_95[::4]
-len_class = [ pg95_99, pg99_995, pg995_m]
-lb = [ 9599, 99995, 99500]
-lenh = [len(pg95_99), len(pg99_995) ,len(pg995_m)]
+## Extract first n pages requested for 90% longest sequences
+sliceLen = 10
+len_class, classLen, lb = classSelect(pg_raw, classInterval, sliceLen)
 
-print lenh
+# Sample data to reduce imbalance
+len_class[0] = len_class[0][::3]
 
 continFrags = [] #len_class
 
@@ -48,6 +42,6 @@ trainData, trainLb, testData, testLb = splitData(continFrags, 0.25, 0.25)
 
 logLoss, mean_accur, confusMat = MLalgo.supvKNN(10, trainData, trainLb, testData, testLb)
 
-#logLossSVM, mean_accurSVM = MLalgo.supVectMach(trainData, trainLb, testData, testLb) 
+# logLossSVM, mean_accurSVM = MLalgo.supVectMach(trainData, trainLb, testData, testLb) 
 
-np.savetxt('confuse.csv', confusMat, delimiter=" ")
+# np.savetxt('confuse.csv', confusMat, delimiter=" ")

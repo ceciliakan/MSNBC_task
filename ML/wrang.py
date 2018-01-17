@@ -2,11 +2,32 @@
 # coding=UTF-8
 
 import numpy as np
-from itertools import groupby, izip
-from sklearn.model_selection import train_test_split
+from itertools import groupby, izip, tee
+from string import ascii_lowercase
+
 from sklearn.preprocessing import normalize
 from sklearn.utils import shuffle
+from sklearn.model_selection import train_test_split
 from sklearn.utils.class_weight import compute_class_weight
+
+
+def pairwise(iterable):
+    a, b = tee(iterable)
+    next(b, None)
+    return izip(a, b)
+
+def classSelect(pg_raw, classInterval, sliceLen):
+    len_class = []
+
+    for i,j in pairwise(classInterval):
+        data = [ x[0:sliceLen] for x in pg_raw if (len(x) > i and len(x) <= j ) ]
+        len_class.append(data)
+
+    lb = list(ascii_lowercase)[ 0:len(classInterval)-1 ]
+
+    classLen = [ len(i) for i in len_class ]
+    return len_class, classLen, lb
+
 
 # get lengths of consective repeated page requests
 def catFragmnts(len_class_lines, fragLen):
@@ -34,7 +55,7 @@ def genClassWeight(tData, lb):
 
 # Split data in training, test, validation sets
 def splitData(continFrags, testSize, valSize):
-    val_size = np.true_divide(valSize , 1 - testSize )
+    # val_size = np.true_divide(valSize , 1 - testSize )
     
     trainData = []
     testData = []
