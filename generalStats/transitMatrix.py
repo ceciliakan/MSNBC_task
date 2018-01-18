@@ -29,7 +29,7 @@ def gen_transitMat(pg99Pct, N):
 
 def transHeatMap(transitMat, pg_category):
     fig, ax = plt.subplots()
-    heatmap = ax.pcolor(transitMat, cmap = plt.cm.viridis, vmin=0, vmax=roundup(np.amax(transitMat))) # 100
+    heatmap = ax.pcolor(transitMat, cmap = plt.cm.viridis, vmin=0, vmax=100) 
 
     idx = np.arange(0,110,10)
     cbar = plt.colorbar(heatmap, ticks=[idx])

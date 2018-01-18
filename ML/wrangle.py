@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding=UTF-8
 
 import numpy as np
 from itertools import groupby, izip, tee
@@ -16,6 +15,7 @@ def pairwise(iterable):
     next(b, None)
     return izip(a, b)
 
+## Partition data by sequence lengths
 def classSelect(pg_raw, classInterval, sliceLen):
     len_class = []
 
@@ -28,40 +28,45 @@ def classSelect(pg_raw, classInterval, sliceLen):
     classLen = [ len(i) for i in len_class ]
     return len_class, classLen, lb
 
-
 # get lengths of consective repeated page requests
-def catFragmnts(len_class_lines, fragLen):
+def catFragmnts(len_class_lines, featureSize):
     fragment_bin = []
 
     for data in len_class_lines:
         fragmnt = [ sum( 1 for _ in group ) for key, group in groupby( data ) if key ]
-        if len(fragmnt) > fragLen:
-            fragmnt = fragmnt[0:fragLen]
+        if len(fragmnt) > featureSize:
+            fragmnt = fragmnt[0:featureSize]
         else:
-            fragmnt = fragmnt + [0] * ( fragLen-len(fragmnt) )
+            fragmnt = fragmnt + [0] * ( featureSize-len(fragmnt) )
         fragment_bin.append(fragmnt)
     
     fragment_bin = normalize(fragment_bin)
     fragment_bin = fragment_bin.tolist()
     return fragment_bin
 
-# get class weight as scale of class size proportion
-def genClassWeight(tData, lb):
-    weightDict = {}
-    class_weight_vect = compute_class_weight(class_weight='balanced', classes = lb, y = tData)
-    for i,j in izip(lb, class_weight_vect):
-        weightDict[str(i)] = j
-    return weightDict
+def classCategory(len_class_lines, featureSize):
+    data = []
+    for line in len_class_lines:
+        data.append( np.bincount(line) )
+    data = [ i.tolist()[1:i.size] for i in data ]
+    data = [ x + [0 for i in range(featureSize - len(x))] for x in data ]
+    data = [ x[0:featureSize] for x in data ]
+    data = normalize(data)
+    classCat_bin = data.tolist()
+    return classCat_bin
 
 # Split data in training, test, validation sets
-def splitData(continFrags, testSize, valSize):
+def splitData(dataContainer, lb, testSize, valSize):    
+    for i, j in izip(dataContainer, lb):
+        for v in i: v.append(j)
+
     # val_size = np.true_divide(valSize , 1 - testSize )
-    
+
     trainData = []
     testData = []
     #valData = []
 
-    for value in continFrags:
+    for value in dataContainer:
         trainD, testD = train_test_split(value, test_size=testSize, random_state = 42)
         #trainD, valD = train_test_split(trainD, test_size=val_size, random_state = 42)
 
