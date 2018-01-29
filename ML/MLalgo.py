@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import numpy as np
+
 from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import log_loss, confusion_matrix

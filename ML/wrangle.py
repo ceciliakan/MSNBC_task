@@ -40,19 +40,16 @@ def catFragmnts(len_class_lines, featureSize):
             fragmnt = fragmnt + [0] * ( featureSize-len(fragmnt) )
         fragment_bin.append(fragmnt)
     
-    fragment_bin = normalize(fragment_bin)
-    fragment_bin = fragment_bin.tolist()
     return fragment_bin
 
 def classCategory(len_class_lines, featureSize):
-    data = []
+    classCat_bin = []
     for line in len_class_lines:
         data.append( np.bincount(line) )
     data = [ i.tolist()[1:i.size] for i in data ]
     data = [ x + [0 for i in range(featureSize - len(x))] for x in data ]
-    data = [ x[0:featureSize] for x in data ]
-    data = normalize(data)
-    classCat_bin = data.tolist()
+    classCat_bin = [ x[0:featureSize] for x in data ]
+
     return classCat_bin
 
 # Split data in training, test, validation sets
@@ -74,6 +71,8 @@ def splitData(dataContainer, lb, testSize, valSize):
         testData = testData + testD
         #valData = valData + valD
 
+    trainData
+
     trainData, trainLb = data_label_split(trainData)
     testData, testLb = data_label_split(testData)
     #valData, valLb = data_label_split(valData)
@@ -88,3 +87,6 @@ def data_label_split(tData):
     for i in data: i.pop()
 
     return data, labels
+
+def sig():
+    return 0

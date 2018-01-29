@@ -14,7 +14,7 @@ def rm_consecut_bin(pg99Pct):
     rm_consecut_pg = [ [x[0] for x in groupby(line)] for line in pg99Pct ]
     rm_consec_bin = np.bincount(flatten(rm_consecut_pg))
     rm_consec_bin = np.delete(rm_consec_bin, 0)
-    return rm_consec_bin, rm_consecut_pg
+    return rm_consec_bin#, rm_consecut_pg
 
 def rm_repeat_bin(pg99Pct):
     rm_re_pg = [set(line) for line in pg99Pct]
